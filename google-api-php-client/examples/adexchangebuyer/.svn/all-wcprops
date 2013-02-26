@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/479/trunk/examples/adexchangebuyer
+END
+BaseExample.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/479/trunk/examples/adexchangebuyer/BaseExample.php
+END
+index.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/479/trunk/examples/adexchangebuyer/index.php
+END
+style.css
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/404/trunk/examples/adexchangebuyer/style.css
+END
+htmlHelper.php
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/404/trunk/examples/adexchangebuyer/htmlHelper.php
+END

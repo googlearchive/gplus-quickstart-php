@@ -1,0 +1,10 @@
+{
+    "name": "google-plus-quickstart/1.0",
+    "description": "This quick-start app is built in PHP and lets you get started with the Google+ platform in a few minutes.",
+    "license": "Apache-2.0",
+    "require": {
+        "silex/silex": "1.0.*@dev",
+        "twig/twig": ">=1.8,<2.0-dev"
+    }
+}
+

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/523/trunk/src/service
+END
+Google_Model.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/474/trunk/src/service/Google_Model.php
+END
+Google_Service.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/474/trunk/src/service/Google_Service.php
+END
+Google_Utils.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/474/trunk/src/service/Google_Utils.php
+END
+Google_MediaFileUpload.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/523/trunk/src/service/Google_MediaFileUpload.php
+END
+Google_ServiceResource.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/523/trunk/src/service/Google_ServiceResource.php
+END
+Google_BatchRequest.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/474/trunk/src/service/Google_BatchRequest.php
+END

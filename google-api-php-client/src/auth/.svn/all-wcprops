@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/500/trunk/src/auth
+END
+Google_P12Signer.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/500/trunk/src/auth/Google_P12Signer.php
+END
+Google_Verifier.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/474/trunk/src/auth/Google_Verifier.php
+END
+Google_LoginTicket.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/474/trunk/src/auth/Google_LoginTicket.php
+END
+Google_PemVerifier.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/487/trunk/src/auth/Google_PemVerifier.php
+END
+Google_AuthNone.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/474/trunk/src/auth/Google_AuthNone.php
+END
+Google_Auth.php
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/474/trunk/src/auth/Google_Auth.php
+END
+Google_OAuth2.php
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/487/trunk/src/auth/Google_OAuth2.php
+END
+Google_AssertionCredentials.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/486/trunk/src/auth/Google_AssertionCredentials.php
+END
+Google_Signer.php
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/474/trunk/src/auth/Google_Signer.php
+END
