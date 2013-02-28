@@ -12,7 +12,7 @@ Getting Started:
   1) Visit https://code.google.com/apis/console/?api=prediction to 
      register your application.
 
-     - From the "Sevices" tab, activate access to "Prediction API".
+     - From the "Services" tab, activate access to "Prediction API".
      - Click on "API Access" in the left column
      - Click the button labeled "Create an OAuth2 client ID"
      - Give your application a name and click "Next"

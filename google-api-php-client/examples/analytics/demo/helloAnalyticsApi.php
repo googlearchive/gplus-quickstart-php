@@ -41,8 +41,8 @@ class HelloAnalyticsApi {
    * @param apiAnalyticsService The analytics service object to make
    *     requests to the API.
    */
-  function __construct(&$anlaytics) {
-    $this->analytics = $anlaytics;
+  function __construct(&$analytics) {
+    $this->analytics = $analytics;
   }
 
   /**
