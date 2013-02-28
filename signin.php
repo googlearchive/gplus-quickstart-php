@@ -127,7 +127,7 @@ $app->post('/connect', function (Request $request) use($app, $client,
 
       // Store the token in the session for later use.
       $app['session']->set('token', json_encode($token));
-      $response = 'Succesfully connected with token: ' . print_r($token, true);
+      $response = 'Successfully connected with token: ' . print_r($token, true);
     }
     return new Response($response, 200);
 });
@@ -149,7 +149,7 @@ $app->post('/disconnect', function () use ($app, $client) {
   $client->revokeToken($token);
   // Remove the credentials from the user's session.
   $app['session']->set('token', '');
-  return new Response('Succesfully disconnected', 200);
+  return new Response('Successfully disconnected', 200);
 });
 
 $app->run();
