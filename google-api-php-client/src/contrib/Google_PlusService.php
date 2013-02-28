@@ -240,7 +240,7 @@
     /**
      * List all of the people in the specified collection. (people.list)
      *
-     * @param string $userId Get the collection of people for the person identified. Use "me" to indiciated the authenticated user.
+     * @param string $userId Get the collection of people for the person identified. Use "me" to indicate the authenticated user.
      * @param string $collection The collection of people to list.
      * @param array $optParams Optional parameters.
      *

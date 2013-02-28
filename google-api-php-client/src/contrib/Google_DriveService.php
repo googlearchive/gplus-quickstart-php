@@ -30,7 +30,7 @@
      *
      * @param array $optParams Optional parameters.
      *
-     * @opt_param bool includeSubscribed When calculating the number of remaining change IDs, whether to include shared files and public files the user has opened. When set to false, this counts only change IDs for owned files and any shared or public files that the user has explictly added to a folder in Drive.
+     * @opt_param bool includeSubscribed When calculating the number of remaining change IDs, whether to include shared files and public files the user has opened. When set to false, this counts only change IDs for owned files and any shared or public files that the user has explicitly added to a folder in Drive.
      * @opt_param string maxChangeIdCount Maximum number of remaining change IDs to count
      * @opt_param string startChangeId Change ID to start counting from when calculating number of remaining change IDs
      * @return Google_About
@@ -127,7 +127,7 @@
      * @param array $optParams Optional parameters.
      *
      * @opt_param bool includeDeleted Whether to include deleted items.
-     * @opt_param bool includeSubscribed Whether to include shared files and public files the user has opened. When set to false, the list will include owned files plus any shared or public files the user has explictly added to a folder in Drive.
+     * @opt_param bool includeSubscribed Whether to include shared files and public files the user has opened. When set to false, the list will include owned files plus any shared or public files the user has explicitly added to a folder in Drive.
      * @opt_param int maxResults Maximum number of changes to return.
      * @opt_param string pageToken Page token for changes.
      * @opt_param string startChangeId Change ID to start listing changes from.
