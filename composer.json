@@ -1,5 +1,5 @@
 {
-    "name": "google-plus-quickstart/1.0",
+    "name": "googleplus/quickstart",
     "description": "This quick-start app is built in PHP and lets you get started with the Google+ platform in a few minutes.",
     "license": "Apache-2.0",
     "require": {
