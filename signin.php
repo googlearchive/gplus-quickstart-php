@@ -100,6 +100,12 @@ $app->post('/connect', function (Request $request) use($app, $client,
       $client->authenticate($code);
       $token = json_decode($client->getAccessToken());
 
+      // You can read the Google user ID in the ID token.
+      // "sub" represents the ID token subscriber which in our case 
+      // is the user ID. This sample does not use the user ID.
+      $attributes = $client->verifyIdToken($token->id_token, CLIENT_ID)->getAttributes();
+      $gplus_id = $attributes["payload"]["sub"];
+
       // Store the token in the session for later use.
       $app['session']->set('token', json_encode($token));
       $response = 'Successfully connected with token: ' . print_r($token, true);
