@@ -89,6 +89,7 @@ var helper = (function() {
       if (authResult['access_token']) {
         // The user is signed in
         this.authResult = authResult;
+        helper.connectServer();
         // After we load the Google+ API, render the profile data from Google+.
         gapi.client.load('plus','v1',this.renderProfile);
       } else if (authResult['error']) {
@@ -112,7 +113,6 @@ var helper = (function() {
             $('#profile').append(profile.error);
             return;
           }
-          helper.connectServer(profile.id);
           $('#profile').append(
               $('<p><img src=\"' + profile.image.url + '\"></p>'));
           $('#profile').append(
@@ -155,12 +155,11 @@ var helper = (function() {
      * For more information, see:
      *   https://developers.google.com/+/web/signin/server-side-flow
      */
-    connectServer: function(gplusId) {
+    connectServer: function() {
       console.log(this.authResult.code);
       $.ajax({
         type: 'POST',
-        url: window.location.href + '/connect?state={{ STATE }}&gplus_id=' +
-            gplusId,
+        url: window.location.href + '/connect?state={{ STATE }}',
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(result) {
           console.log(result);
