@@ -79,8 +79,7 @@ $app->get('/', function () use ($app) {
 // Upgrade given auth code to token, and store it in the session.
 // POST body of request should be the authorization code.
 // Example URI: /connect?state=...&gplus_id=...
-$app->post('/connect', function (Request $request) use($app, $client,
-        $oauth2Service) {
+$app->post('/connect', function (Request $request) use($app, $client) {
     $token = $app['session']->get('token');
     if(empty($token)) {
 
