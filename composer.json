@@ -2,9 +2,27 @@
     "name": "googleplus/quickstart",
     "description": "This quick-start app is built in PHP and lets you get started with the Google+ platform in a few minutes.",
     "license": "Apache-2.0",
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "google/google-api-php-client",
+                "version": "0.6.2",
+                "dist": {
+                    "url": "http://google-api-php-client.googlecode.com/files/google-api-php-client-0.6.2.tar.gz",
+                    "type": "tar"
+                },
+                "autoload": {
+                    "classmap": [
+                        "src/"
+                    ]
+                }
+            }
+        }
+    ],
     "require": {
         "silex/silex": "1.0.*@dev",
-        "twig/twig": ">=1.8,<2.0-dev"
+        "twig/twig": ">=1.8,<2.0-dev",
+        "google/google-api-php-client": "0.6.2"
     }
 }
-
