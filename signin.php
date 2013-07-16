@@ -21,8 +21,6 @@
  */
 
 require_once __DIR__.'/vendor/autoload.php';
-require_once __DIR__.'/google-api-php-client/src/Google_Client.php';
-require_once __DIR__.'/google-api-php-client/src/contrib/Google_PlusService.php';
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
