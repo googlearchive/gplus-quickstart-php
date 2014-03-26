@@ -20,12 +20,15 @@
  * limitations under the License.
  */
 
+/*
+ * Note (Gerwin Sturm):
+ * Include path is still necessary despite autoloading because of the require_once in the libary
+ * Client library should be fixed to have correct relative paths
+ * e.g. require_once '../Google/Model.php'; instead of require_once 'Google/Model.php';
+ */
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ .'/vendor/google/apiclient/src');
 
 require_once __DIR__.'/vendor/autoload.php';
-
-require_once "Google/Client.php";
-require_once "Google/Service/Plus.php";
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

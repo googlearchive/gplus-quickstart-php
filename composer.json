@@ -12,6 +12,11 @@
                     "url": "https://github.com/google/google-api-php-client.git",
                     "type": "git",
                     "reference": "master"
+                },
+                "autoload": {
+                    "classmap": [
+                        "src/"
+                    ]
                 }
             }
         }

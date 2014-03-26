@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c097acd2b07e93b1022879243adfd555",
+    "hash": "efbce2d3303d27b1d15749ec7d0d30a5",
     "packages": [
         {
             "name": "google/apiclient",
@@ -13,7 +13,12 @@
                 "url": "https://github.com/google/google-api-php-client.git",
                 "reference": "master"
             },
-            "type": "library"
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            }
         },
         {
             "name": "pimple/pimple",
