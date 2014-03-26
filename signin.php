@@ -20,7 +20,12 @@
  * limitations under the License.
  */
 
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ .'/vendor/google/apiclient/src');
+
 require_once __DIR__.'/vendor/autoload.php';
+
+require_once "Google/Client.php";
+require_once "Google/Service/Plus.php";
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,7 +58,7 @@ $client->setClientId(CLIENT_ID);
 $client->setClientSecret(CLIENT_SECRET);
 $client->setRedirectUri('postmessage');
 
-$plus = new Google_PlusService($client);
+$plus = new Google_Service_Plus($client);
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -108,6 +113,8 @@ $app->post('/connect', function (Request $request) use ($app, $client) {
         // Store the token in the session for later use.
         $app['session']->set('token', json_encode($token));
         $response = 'Successfully connected with token: ' . print_r($token, true);
+    } else {
+        $response = 'Already connected';
     }
 
     return new Response($response, 200);
@@ -123,7 +130,15 @@ $app->get('/people', function () use ($app, $client, $plus) {
 
     $client->setAccessToken($token);
     $people = $plus->people->listPeople('me', 'visible', array());
-    return $app->json($people);
+
+    /*
+     * Note (Gerwin Sturm):
+     * $app->json($people) ignores the $people->items not returning this array
+     * Probably needs to be fixed in the Client Library
+     * items isn't listed as public property in Google_Service_Plus_Person
+     * Using ->toSimpleObject for now to get a JSON-convertible object
+     */
+    return $app->json($people->toSimpleObject());
 });
 
 // Revoke current user's token and reset their session.
