@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2013 Google Inc.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,12 @@
 <head>
   <title>{{ APPLICATION_NAME }}</title>
   <script type="text/javascript">
+  var auth2 = auth2 || {};
+
   (function() {
     var po = document.createElement('script');
     po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://plus.google.com/js/client:plusone.js';
+    po.src = 'https://plus.google.com/js/client:plusone.js?onload=startApp';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(po, s);
   })();
@@ -35,17 +37,20 @@
      calls -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>
 </head>
+<style>
+    #customBtn {
+      width: 155px;
+    }
+    #customBtn:hover {
+      box-shadow: 2px 2px 3px #888888;
+      border-radius: 5px;
+      cursor: hand;
+    }
+</style>
 <body>
-  <div id="gConnect">
-    <button class="g-signin"
-        data-scope="https://www.googleapis.com/auth/plus.login"
-        data-requestvisibleactions="http://schemas.google.com/AddActivity"
-        data-clientId="{{ CLIENT_ID }}"
-        data-accesstype="offline"
-        data-callback="onSignInCallback"
-        data-theme="dark"
-        data-cookiepolicy="single_host_origin">
-    </button>
+  <div id="gConnect" >
+    <img id="customBtn" src="/signin_button.png" onClick="signInClick()"
+        alt="Sign in with Google+" />
   </div>
   <div id="authOps" style="display:none">
     <h2>User is now signed in to the app using Google+</h2>
@@ -89,9 +94,13 @@ var helper = (function() {
       if (authResult['access_token']) {
         // The user is signed in
         this.authResult = authResult;
-        helper.connectServer();
+
         // After we load the Google+ API, render the profile data from Google+.
         gapi.client.load('plus','v1',this.renderProfile);
+
+        // After we load the profile, retrieve the list of people visible to
+        // this app, server-side.
+        helper.people();
       } else if (authResult['error']) {
         // There was an error, which means the user is not signed in.
         // As an example, you can troubleshoot by writing to the console:
@@ -107,7 +116,7 @@ var helper = (function() {
      */
     renderProfile: function() {
       var request = gapi.client.plus.people.get( {'userId' : 'me'} );
-      request.execute( function(profile) {
+      request.execute(function(profile) {
           $('#profile').empty();
           if (profile.error) {
             $('#profile').append(profile.error);
@@ -155,8 +164,8 @@ var helper = (function() {
      * For more information, see:
      *   https://developers.google.com/+/web/signin/server-side-flow
      */
-    connectServer: function() {
-      console.log(this.authResult.code);
+    connectServer: function(code) {
+      console.log(code);
       $.ajax({
         type: 'POST',
         url: window.location.href + '/connect?state={{ STATE }}',
@@ -164,22 +173,25 @@ var helper = (function() {
         success: function(result) {
           console.log(result);
           helper.people();
+          onSignInCallback(auth2.currentUser.get().getAuthResponse());
         },
         processData: false,
-        data: this.authResult.code
+        data: code
       });
     },
     /**
      * Calls the server endpoint to get the list of people visible to this app.
+     * @param success Callback called on success.
+     * @param failure Callback called on error.
      */
-    people: function() {
+    people: function(success, failure) {
+      success = success || function(result) { helper.appendCircled(result); };
       $.ajax({
         type: 'GET',
         url: window.location.href + '/people',
         contentType: 'application/octet-stream; charset=utf-8',
-        success: function(result) {
-          helper.appendCircled(result);
-        },
+        success: success,
+        error: failure,
         processData: false
       });
     },
@@ -216,6 +228,54 @@ $(document).ready(function() {
     );
   }
 });
+
+/**
+ * Called after the Google client library has loaded.
+ */
+function startApp() {
+  gapi.load('auth2', function(){
+
+    // Retrieve the singleton for the GoogleAuth library and setup the client.
+    gapi.auth2.init({
+        client_id: '{{ CLIENT_ID }}',
+        cookiepolicy: 'single_host_origin',
+        fetch_basic_profile: false,
+        scope: 'https://www.googleapis.com/auth/plus.login'
+      }).then(function (){
+            console.log('init');
+            auth2 = gapi.auth2.getAuthInstance();
+            auth2.then(function() {
+                var isAuthedCallback = function () {
+                  onSignInCallback(auth2.currentUser.get().getAuthResponse())
+                }
+                helper.people(isAuthedCallback);
+              });
+          });
+  });
+}
+
+/**
+ * Either signs the user in or authorizes the back-end.
+ */
+function signInClick() {
+  var signIn = function(result) {
+      auth2.signIn().then(
+        function(googleUser) {
+          onSignInCallback(googleUser.getAuthResponse());
+        }, function(error) {
+          alert(JSON.stringify(error, undefined, 2));
+        });
+    };
+
+  var reauthorize = function() {
+      auth2.grantOfflineAccess().then(
+        function(result){
+          helper.connectServer(result.code);
+        });
+    };
+
+  helper.people(signIn, reauthorize);
+}
 
 /**
  * Calls the helper method that handles the authentication flow.
