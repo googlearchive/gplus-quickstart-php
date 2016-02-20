@@ -123,8 +123,8 @@ $app->post('/connect', function (Request $request) use ($app, $client) {
     return new Response($response, 200);
 });
 
-// Get list of people user has shared with this app.
-$app->get('/people', function () use ($app, $client, $plus) {
+// Get list of activities visible to this app.
+$app->get('/activities', function () use ($app, $client, $plus) {
     $token = $app['session']->get('token');
 
     if (empty($token)) {
@@ -132,16 +132,15 @@ $app->get('/people', function () use ($app, $client, $plus) {
     }
 
     $client->setAccessToken($token);
-    $people = $plus->people->listPeople('me', 'visible', array());
+    $activities = $plus->activities->listActivities('me', 'public', array());
 
     /*
      * Note (Gerwin Sturm):
-     * $app->json($people) ignores the $people->items not returning this array
+     * $app->json($activities) ignores the $activities->items not returning this array
      * Probably needs to be fixed in the Client Library
-     * items isn't listed as public property in Google_Service_Plus_Person
      * Using ->toSimpleObject for now to get a JSON-convertible object
      */
-    return $app->json($people->toSimpleObject());
+    return $app->json($activities->toSimpleObject());
 });
 
 // Revoke current user's token and reset their session.

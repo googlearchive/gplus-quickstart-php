@@ -63,12 +63,12 @@
     client library.</p>
     <div id="profile"></div>
 
-    <h2>User's friends that are visible to this app</h2>
+    <h2>Activities visible to this app</h2>
     <p>This data is retrieved from your server, where your server makes
     an authorized HTTP request on the user's behalf.</p>
     <p>If your app uses server-side rendering, this is the section you
     would change using your server-side templating system.</p>
-    <div id="visiblePeople"></div>
+    <div id="activities"></div>
 
     <h2>Authentication Logs</h2>
     <pre id="authResult"></pre>
@@ -98,9 +98,9 @@ var helper = (function() {
         // After we load the Google+ API, render the profile data from Google+.
         gapi.client.load('plus','v1',this.renderProfile);
 
-        // After we load the profile, retrieve the list of people visible to
-        // this app, server-side.
-        helper.people();
+        // After we load the profile, retrieve the list of activities visible
+        // to this app, server-side.
+        helper.activities();
       } else if (authResult['error']) {
         // There was an error, which means the user is not signed in.
         // As an example, you can troubleshoot by writing to the console:
@@ -142,7 +142,7 @@ var helper = (function() {
       // Revoke the server tokens
       $.ajax({
         type: 'POST',
-        url: window.location.href + '/disconnect',
+        url: $(location).attr('origin') + '/signin.php/disconnect',
         async: false,
         success: function(result) {
           console.log('revoke response: ' + result);
@@ -168,11 +168,11 @@ var helper = (function() {
       console.log(code);
       $.ajax({
         type: 'POST',
-        url: window.location.href + '/connect?state={{ STATE }}',
+        url: $(location).attr('origin') + '/signin.php/connect?state={{ STATE }}',
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(result) {
           console.log(result);
-          helper.people();
+          helper.activities();
           onSignInCallback(auth2.currentUser.get().getAuthResponse());
         },
         processData: false,
@@ -180,15 +180,16 @@ var helper = (function() {
       });
     },
     /**
-     * Calls the server endpoint to get the list of people visible to this app.
+     * Calls the server endpoint to get the list of activities visible to this
+     * app.
      * @param success Callback called on success.
      * @param failure Callback called on error.
      */
-    people: function(success, failure) {
-      success = success || function(result) { helper.appendCircled(result); };
+    activities: function(success, failure) {
+      success = success || function(result) { helper.appendActivity(result); };
       $.ajax({
         type: 'GET',
-        url: window.location.href + '/people',
+        url: $(location).attr('origin') + '/signin.php/activities',
         contentType: 'application/octet-stream; charset=utf-8',
         success: success,
         error: failure,
@@ -198,16 +199,16 @@ var helper = (function() {
     /**
      * Displays visible People retrieved from server.
      *
-     * @param {Object} people A list of Google+ Person resources.
+     * @param {Object} activities A list of Google+ activity resources.
      */
-    appendCircled: function(people) {
-      $('#visiblePeople').empty();
+    appendActivity: function(activities) {
+      $('#activities').empty();
 
-      $('#visiblePeople').append('Number of people visible to this app: ' +
-          people.totalItems + '<br/>');
-      for (var personIndex in people.items) {
-        person = people.items[personIndex];
-        $('#visiblePeople').append('<img src="' + person.image.url + '">');
+      $('#activities').append('Number of activities retrieved: ' +
+          activities.items.length + '<br/>');
+      for (var activityIndex in activities.items) {
+        activity = activities.items[activityIndex];
+        $('#activities').append('<hr>' + activity.object.content + '<br/>');
       }
     },
   };
@@ -248,7 +249,7 @@ function startApp() {
                 var isAuthedCallback = function () {
                   onSignInCallback(auth2.currentUser.get().getAuthResponse())
                 }
-                helper.people(isAuthedCallback);
+                helper.activities(isAuthedCallback);
               });
           });
   });
@@ -274,7 +275,7 @@ function signInClick() {
         });
     };
 
-  helper.people(signIn, reauthorize);
+  helper.activities(signIn, reauthorize);
 }
 
 /**
