@@ -4,16 +4,16 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f86acdf982d56af6b482082bd991eab2",
-    "content-hash": "30fadbab64e7cede0642f10a078e5eea",
+    "hash": "de7eeaa7b97d987f6d7a6f4e81d9e5e0",
+    "content-hash": "791cdafc2665fd9ea6557df5e2a2b59c",
     "packages": [
         {
             "name": "google/apiclient",
-            "version": "1.0.0",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-api-php-client.git",
-                "reference": "master"
+                "reference": "v1-master"
             },
             "type": "library",
             "autoload": {
