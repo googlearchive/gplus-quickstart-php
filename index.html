@@ -22,17 +22,7 @@
 <html>
 <head>
   <title>{{ APPLICATION_NAME }}</title>
-  <script type="text/javascript">
-  var auth2 = auth2 || {};
-
-  (function() {
-    var po = document.createElement('script');
-    po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://plus.google.com/js/client:plusone.js?onload=startApp';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(po, s);
-  })();
-  </script>
+  
   <!-- JavaScript specific to this application that is not related to API
      calls -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>
@@ -74,6 +64,17 @@
     <pre id="authResult"></pre>
   </div>
 </body>
+<script type="text/javascript">
+  var auth2 = auth2 || {};
+
+  (function() {
+    var po = document.createElement('script');
+    po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://plus.google.com/js/client:plusone.js?onload=startApp';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(po, s);
+  })();
+  </script>
 <script type="text/javascript">
 var helper = (function() {
   var authResult = undefined;
