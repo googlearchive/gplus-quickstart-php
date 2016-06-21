@@ -22,17 +22,7 @@
 <html>
 <head>
   <title>{{ APPLICATION_NAME }}</title>
-  <script type="text/javascript">
-  var auth2 = auth2 || {};
 
-  (function() {
-    var po = document.createElement('script');
-    po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://plus.google.com/js/client:plusone.js?onload=startApp';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(po, s);
-  })();
-  </script>
   <!-- JavaScript specific to this application that is not related to API
      calls -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>
@@ -73,219 +63,230 @@
     <h2>Authentication Logs</h2>
     <pre id="authResult"></pre>
   </div>
-</body>
-<script type="text/javascript">
-var helper = (function() {
-  var authResult = undefined;
+  <script type="text/javascript">
+    var auth2 = auth2 || {};
 
-  return {
-    /**
-     * Hides the sign-in button and connects the server-side app after
-     * the user successfully signs in.
-     *
-     * @param {Object} authResult An Object which contains the access token and
-     *   other authentication information.
-     */
-    onSignInCallback: function(authResult) {
-      $('#authResult').html('Auth Result:<br/>');
-      for (var field in authResult) {
-        $('#authResult').append(' ' + field + ': ' + authResult[field] + '<br/>');
-      }
-      if (authResult['access_token']) {
-        // The user is signed in
-        this.authResult = authResult;
+    (function() {
+      var po = document.createElement('script');
+      po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://plus.google.com/js/client:plusone.js?onload=startApp';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(po, s);
+    })();
+    </script>
+  <script type="text/javascript">
+  var helper = (function() {
+    var authResult = undefined;
 
-        // After we load the Google+ API, render the profile data from Google+.
-        gapi.client.load('plus','v1',this.renderProfile);
-
-        // After we load the profile, retrieve the list of activities visible
-        // to this app, server-side.
-        helper.activities();
-      } else if (authResult['error']) {
-        // There was an error, which means the user is not signed in.
-        // As an example, you can troubleshoot by writing to the console:
-        console.log('There was an error: ' + authResult['error']);
-        $('#authResult').append('Logged out');
-        $('#authOps').hide('slow');
-        $('#gConnect').show();
-      }
-      console.log('authResult', authResult);
-    },
-    /**
-     * Retrieves and renders the authenticated user's Google+ profile.
-     */
-    renderProfile: function() {
-      var request = gapi.client.plus.people.get( {'userId' : 'me'} );
-      request.execute(function(profile) {
-          $('#profile').empty();
-          if (profile.error) {
-            $('#profile').append(profile.error);
-            return;
-          }
-          $('#profile').append(
-              $('<p><img src=\"' + profile.image.url + '\"></p>'));
-          $('#profile').append(
-              $('<p>Hello ' + profile.displayName + '!<br />Tagline: ' +
-              profile.tagline + '<br />About: ' + profile.aboutMe + '</p>'));
-          if (profile.cover && profile.coverPhoto) {
-            $('#profile').append(
-                $('<p><img src=\"' + profile.cover.coverPhoto.url + '\"></p>'));
-          }
-        });
-      $('#authOps').show('slow');
-      $('#gConnect').hide();
-    },
-    /**
-     * Calls the server endpoint to disconnect the app for the user.
-     */
-    disconnectServer: function() {
-      // Revoke the server tokens
-      $.ajax({
-        type: 'POST',
-        url: $(location).attr('origin') + '/signin.php/disconnect',
-        async: false,
-        success: function(result) {
-          console.log('revoke response: ' + result);
-          $('#authOps').hide();
-          $('#profile').empty();
-          $('#visiblePeople').empty();
-          $('#authResult').empty();
-          $('#gConnect').show();
-        },
-        error: function(e) {
-          console.log(e);
+    return {
+      /**
+       * Hides the sign-in button and connects the server-side app after
+       * the user successfully signs in.
+       *
+       * @param {Object} authResult An Object which contains the access token and
+       *   other authentication information.
+       */
+      onSignInCallback: function(authResult) {
+        $('#authResult').html('Auth Result:<br/>');
+        for (var field in authResult) {
+          $('#authResult').append(' ' + field + ': ' + authResult[field] + '<br/>');
         }
-      });
-    },
-    /**
-     * Calls the server endpoint to connect the app for the user. The client
-     * sends the one-time authorization code to the server and the server
-     * exchanges the code for its own tokens to use for offline API access.
-     * For more information, see:
-     *   https://developers.google.com/+/web/signin/server-side-flow
-     */
-    connectServer: function(code) {
-      console.log(code);
-      $.ajax({
-        type: 'POST',
-        url: $(location).attr('origin') + '/signin.php/connect?state={{ STATE }}',
-        contentType: 'application/octet-stream; charset=utf-8',
-        success: function(result) {
-          console.log(result);
+        if (authResult['access_token']) {
+          // The user is signed in
+          this.authResult = authResult;
+
+          // After we load the Google+ API, render the profile data from Google+.
+          gapi.client.load('plus','v1',this.renderProfile);
+
+          // After we load the profile, retrieve the list of activities visible
+          // to this app, server-side.
           helper.activities();
-          onSignInCallback(auth2.currentUser.get().getAuthResponse());
-        },
-        processData: false,
-        data: code
-      });
-    },
-    /**
-     * Calls the server endpoint to get the list of activities visible to this
-     * app.
-     * @param success Callback called on success.
-     * @param failure Callback called on error.
-     */
-    activities: function(success, failure) {
-      success = success || function(result) { helper.appendActivity(result); };
-      $.ajax({
-        type: 'GET',
-        url: $(location).attr('origin') + '/signin.php/activities',
-        contentType: 'application/octet-stream; charset=utf-8',
-        success: success,
-        error: failure,
-        processData: false
-      });
-    },
-    /**
-     * Displays visible People retrieved from server.
-     *
-     * @param {Object} activities A list of Google+ activity resources.
-     */
-    appendActivity: function(activities) {
-      $('#activities').empty();
-
-      $('#activities').append('Number of activities retrieved: ' +
-          activities.items.length + '<br/>');
-      for (var activityIndex in activities.items) {
-        activity = activities.items[activityIndex];
-        $('#activities').append('<hr>' + activity.object.content + '<br/>');
-      }
-    },
-  };
-})();
-
-/**
- * Perform jQuery initialization and check to ensure that you updated your
- * client ID.
- */
-$(document).ready(function() {
-  $('#disconnect').click(helper.disconnectServer);
-  if ($('[data-clientid="YOUR_CLIENT_ID"]').length > 0) {
-    alert('This sample requires your OAuth credentials (client ID) ' +
-        'from the Google APIs console:\n' +
-        '    https://code.google.com/apis/console/#:access\n\n' +
-        'Find and replace YOUR_CLIENT_ID with your client ID and ' +
-        'YOUR_CLIENT_SECRET with your client secret in the project sources.'
-    );
-  }
-});
-
-/**
- * Called after the Google client library has loaded.
- */
-function startApp() {
-  gapi.load('auth2', function(){
-
-    // Retrieve the singleton for the GoogleAuth library and setup the client.
-    gapi.auth2.init({
-        client_id: '{{ CLIENT_ID }}',
-        cookiepolicy: 'single_host_origin',
-        fetch_basic_profile: false,
-        scope: 'https://www.googleapis.com/auth/plus.login'
-      }).then(function (){
-            console.log('init');
-            auth2 = gapi.auth2.getAuthInstance();
-            auth2.then(function() {
-                var isAuthedCallback = function () {
-                  onSignInCallback(auth2.currentUser.get().getAuthResponse())
-                }
-                helper.activities(isAuthedCallback);
-              });
+        } else if (authResult['error']) {
+          // There was an error, which means the user is not signed in.
+          // As an example, you can troubleshoot by writing to the console:
+          console.log('There was an error: ' + authResult['error']);
+          $('#authResult').append('Logged out');
+          $('#authOps').hide('slow');
+          $('#gConnect').show();
+        }
+        console.log('authResult', authResult);
+      },
+      /**
+       * Retrieves and renders the authenticated user's Google+ profile.
+       */
+      renderProfile: function() {
+        var request = gapi.client.plus.people.get( {'userId' : 'me'} );
+        request.execute(function(profile) {
+            $('#profile').empty();
+            if (profile.error) {
+              $('#profile').append(profile.error);
+              return;
+            }
+            $('#profile').append(
+                $('<p><img src=\"' + profile.image.url + '\"></p>'));
+            $('#profile').append(
+                $('<p>Hello ' + profile.displayName + '!<br />Tagline: ' +
+                profile.tagline + '<br />About: ' + profile.aboutMe + '</p>'));
+            if (profile.cover && profile.coverPhoto) {
+              $('#profile').append(
+                  $('<p><img src=\"' + profile.cover.coverPhoto.url + '\"></p>'));
+            }
           });
+        $('#authOps').show('slow');
+        $('#gConnect').hide();
+      },
+      /**
+       * Calls the server endpoint to disconnect the app for the user.
+       */
+      disconnectServer: function() {
+        // Revoke the server tokens
+        $.ajax({
+          type: 'POST',
+          url: $(location).attr('origin') + '/signin.php/disconnect',
+          async: false,
+          success: function(result) {
+            console.log('revoke response: ' + result);
+            $('#authOps').hide();
+            $('#profile').empty();
+            $('#visiblePeople').empty();
+            $('#authResult').empty();
+            $('#gConnect').show();
+          },
+          error: function(e) {
+            console.log(e);
+          }
+        });
+      },
+      /**
+       * Calls the server endpoint to connect the app for the user. The client
+       * sends the one-time authorization code to the server and the server
+       * exchanges the code for its own tokens to use for offline API access.
+       * For more information, see:
+       *   https://developers.google.com/+/web/signin/server-side-flow
+       */
+      connectServer: function(code) {
+        console.log(code);
+        $.ajax({
+          type: 'POST',
+          url: $(location).attr('origin') + '/signin.php/connect?state={{ STATE }}',
+          contentType: 'application/octet-stream; charset=utf-8',
+          success: function(result) {
+            console.log(result);
+            helper.activities();
+            onSignInCallback(auth2.currentUser.get().getAuthResponse());
+          },
+          processData: false,
+          data: code
+        });
+      },
+      /**
+       * Calls the server endpoint to get the list of activities visible to this
+       * app.
+       * @param success Callback called on success.
+       * @param failure Callback called on error.
+       */
+      activities: function(success, failure) {
+        success = success || function(result) { helper.appendActivity(result); };
+        $.ajax({
+          type: 'GET',
+          url: $(location).attr('origin') + '/signin.php/activities',
+          contentType: 'application/octet-stream; charset=utf-8',
+          success: success,
+          error: failure,
+          processData: false
+        });
+      },
+      /**
+       * Displays visible People retrieved from server.
+       *
+       * @param {Object} activities A list of Google+ activity resources.
+       */
+      appendActivity: function(activities) {
+        $('#activities').empty();
+
+        $('#activities').append('Number of activities retrieved: ' +
+            activities.items.length + '<br/>');
+        for (var activityIndex in activities.items) {
+          activity = activities.items[activityIndex];
+          $('#activities').append('<hr>' + activity.object.content + '<br/>');
+        }
+      },
+    };
+  })();
+
+  /**
+   * Perform jQuery initialization and check to ensure that you updated your
+   * client ID.
+   */
+  $(document).ready(function() {
+    $('#disconnect').click(helper.disconnectServer);
+    if ($('[data-clientid="YOUR_CLIENT_ID"]').length > 0) {
+      alert('This sample requires your OAuth credentials (client ID) ' +
+          'from the Google APIs console:\n' +
+          '    https://code.google.com/apis/console/#:access\n\n' +
+          'Find and replace YOUR_CLIENT_ID with your client ID and ' +
+          'YOUR_CLIENT_SECRET with your client secret in the project sources.'
+      );
+    }
   });
-}
 
-/**
- * Either signs the user in or authorizes the back-end.
- */
-function signInClick() {
-  var signIn = function(result) {
-      auth2.signIn().then(
-        function(googleUser) {
-          onSignInCallback(googleUser.getAuthResponse());
-        }, function(error) {
-          alert(JSON.stringify(error, undefined, 2));
-        });
-    };
+  /**
+   * Called after the Google client library has loaded.
+   */
+  function startApp() {
+    gapi.load('auth2', function(){
 
-  var reauthorize = function() {
-      auth2.grantOfflineAccess().then(
-        function(result){
-          helper.connectServer(result.code);
-        });
-    };
+      // Retrieve the singleton for the GoogleAuth library and setup the client.
+      gapi.auth2.init({
+          client_id: '{{ CLIENT_ID }}',
+          cookiepolicy: 'single_host_origin',
+          fetch_basic_profile: false,
+          scope: 'https://www.googleapis.com/auth/plus.login'
+        }).then(function (){
+              console.log('init');
+              auth2 = gapi.auth2.getAuthInstance();
+              auth2.then(function() {
+                  var isAuthedCallback = function () {
+                    onSignInCallback(auth2.currentUser.get().getAuthResponse())
+                  }
+                  helper.activities(isAuthedCallback);
+                });
+            });
+    });
+  }
 
-  helper.activities(signIn, reauthorize);
-}
+  /**
+   * Either signs the user in or authorizes the back-end.
+   */
+  function signInClick() {
+    var signIn = function(result) {
+        auth2.signIn().then(
+          function(googleUser) {
+            onSignInCallback(googleUser.getAuthResponse());
+          }, function(error) {
+            alert(JSON.stringify(error, undefined, 2));
+          });
+      };
 
-/**
- * Calls the helper method that handles the authentication flow.
- *
- * @param {Object} authResult An Object which contains the access token and
- *   other authentication information.
- */
-function onSignInCallback(authResult) {
-  helper.onSignInCallback(authResult);
-}
-</script>
+    var reauthorize = function() {
+        auth2.grantOfflineAccess().then(
+          function(result){
+            helper.connectServer(result.code);
+          });
+      };
+
+    helper.activities(signIn, reauthorize);
+  }
+
+  /**
+   * Calls the helper method that handles the authentication flow.
+   *
+   * @param {Object} authResult An Object which contains the access token and
+   *   other authentication information.
+   */
+  function onSignInCallback(authResult) {
+    helper.onSignInCallback(authResult);
+  }
+  </script>
+</body>
 </html>
