@@ -221,11 +221,9 @@ var helper = (function() {
 $(document).ready(function() {
   $('#disconnect').click(helper.disconnectServer);
   if ($('[data-clientid="YOUR_CLIENT_ID"]').length > 0) {
-    alert('This sample requires your OAuth credentials (client ID) ' +
-        'from the Google APIs console:\n' +
+    alert('This sample requires your OAuth credentials (client ID) from the Google APIs console:\n' +
         '    https://code.google.com/apis/console/#:access\n\n' +
-        'Find and replace YOUR_CLIENT_ID with your client ID and ' +
-        'YOUR_CLIENT_SECRET with your client secret in the project sources.'
+        'Find and replace YOUR_CLIENT_ID with your client ID and YOUR_CLIENT_SECRET with your client secret in the project sources.'
     );
   }
 });
